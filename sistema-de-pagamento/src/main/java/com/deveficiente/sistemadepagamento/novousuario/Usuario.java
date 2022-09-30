@@ -1,7 +1,11 @@
 package com.deveficiente.sistemadepagamento.novousuario;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.deveficiente.sistemadepagamento.listagemformaspagamento.RegraFraude;
+import com.deveficiente.sistemadepagamento.listagemformaspagamento.RegraUsuarioEmailFraudulento;
+import com.deveficiente.sistemadepagamento.novorestaurante.Restaurante;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -12,6 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+
+import static java.util.stream.Collectors.*;
 
 @Entity
 public class Usuario {
@@ -40,8 +46,10 @@ public class Usuario {
 		return email;
 	}
 
-	public Set<TipoDePagamento> getFormasPagamento() {
-		return formasPagamento;
-	}
-
+    public List<TipoDePagamento> getMatchPagamentos(Restaurante restaurante, Collection<RegraFraude> regrasFraude) {
+		return this.formasPagamento.stream()
+				.filter(restaurante::aceita)
+				.filter(formasPagamento -> regrasFraude.stream().allMatch(
+						regra -> regra.aceita(formasPagamento, this))).collect(toList());
+    }
 }

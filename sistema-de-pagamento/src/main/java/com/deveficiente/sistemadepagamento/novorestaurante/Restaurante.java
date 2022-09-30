@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.deveficiente.sistemadepagamento.listagemformaspagamento.vo.FormasPagamentoVo;
 import com.deveficiente.sistemadepagamento.novousuario.TipoDePagamento;
 
 @Entity
@@ -53,4 +54,7 @@ public class Restaurante {
 				+ "]";
 	}
 
+    public boolean aceita(TipoDePagamento tipoDePagamento) {
+		return this.formasPagamentoDisponiveis.contains(tipoDePagamento);
+    }
 }
