@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 public class RegraUsuarioEmailFraudulentoNaoAceitaNada implements RegraFraude {
 
     public boolean aceita(TipoDePagamento formasPagamento, Usuario usuario) {
-        return false;
+        return true;
     }
 }

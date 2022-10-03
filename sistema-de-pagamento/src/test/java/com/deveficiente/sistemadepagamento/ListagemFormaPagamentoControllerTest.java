@@ -25,7 +25,6 @@ public class ListagemFormaPagamentoControllerTest {
 	@Test
 	@DisplayName("exibe opcoes de pagamento para o usuario baseado nas suas possibilidades de pagamento")
 	void teste1() throws Exception {
-		
 		String email = "icety@gmail.com";
 		Set<TipoDePagamento> formasPagamentoUsuario = Set.of(TipoDePagamento.Dinheiro, TipoDePagamento.Cheque);
 		
@@ -46,13 +45,11 @@ public class ListagemFormaPagamentoControllerTest {
 				.writeValueAsString(opcoesPagamento);
 		
 		resultado.andExpect(MockMvcResultMatchers.content().json(jsonEsperado));
-	
 	}
 	
 	@Test
 	@DisplayName("fluxo de listagem de pagamentos sem opcoes de pagamento para o restaurante")
 	void teste2() throws Exception {
-		
 		String email = "icety@gmail.com";
 		Set<TipoDePagamento> formasPagamentoUsuario = Set.of(TipoDePagamento.Dinheiro, TipoDePagamento.Cheque);
 		
@@ -71,7 +68,5 @@ public class ListagemFormaPagamentoControllerTest {
 				.writeValueAsString(opcoesPagamento);
 		
 		resultado.andExpect(MockMvcResultMatchers.content().json(jsonEsperado));
-	
 	}
-	
 }

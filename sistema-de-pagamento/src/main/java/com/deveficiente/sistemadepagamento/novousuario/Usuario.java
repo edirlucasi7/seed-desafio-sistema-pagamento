@@ -34,7 +34,8 @@ public class Usuario {
 	@ElementCollection
 	@Enumerated(EnumType.STRING)
 	private Set<TipoDePagamento> formasPagamento = new HashSet<>();
-	
+
+	@Deprecated
 	public Usuario() { }
 	
 	public Usuario(@NotNull @Email String email, Set<TipoDePagamento> formasPagamento) {
@@ -52,4 +53,8 @@ public class Usuario {
 				.filter(formasPagamento -> regrasFraude.stream().allMatch(
 						regra -> regra.aceita(formasPagamento, this))).collect(toList());
     }
+
+	public boolean permitePagamento(Restaurante restaurante, TipoDePagamento tipoDePagamento, Collection<RegraFraude> regraFraudes) {
+		return getMatchPagamentos(restaurante, regraFraudes).contains(tipoDePagamento);
+	}
 }
