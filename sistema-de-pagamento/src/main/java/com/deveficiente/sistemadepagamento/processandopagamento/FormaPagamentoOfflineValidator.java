@@ -7,12 +7,12 @@ public class FormaPagamentoOfflineValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return NovoPedidoRequest.class.isAssignableFrom(clazz);
+        return NovoSolicitationRequest.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        NovoPedidoRequest request = (NovoPedidoRequest) target;
+        NovoSolicitationRequest request = (NovoSolicitationRequest) target;
         if(!request.isOffline()) {
             errors.rejectValue("tipoDePagamento", null, "A forma de pagamento precisa ser offline!");
         }

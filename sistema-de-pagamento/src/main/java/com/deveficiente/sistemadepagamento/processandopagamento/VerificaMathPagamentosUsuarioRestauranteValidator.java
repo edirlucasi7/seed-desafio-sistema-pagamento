@@ -22,7 +22,7 @@ public class VerificaMathPagamentosUsuarioRestauranteValidator implements Valida
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return NovoPedidoRequest.class.isAssignableFrom(clazz);
+        return NovoSolicitationRequest.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -30,11 +30,11 @@ public class VerificaMathPagamentosUsuarioRestauranteValidator implements Valida
         if(errors.hasErrors()) {
             return;
         }
-        NovoPedidoRequest request = (NovoPedidoRequest) target;
-        Usuario usuario = manager.find(Usuario.class, request.getIdUsario());
-        Restaurante restaurante = manager.find(Restaurante.class, request.getIdRestaurante());
+        NovoSolicitationRequest request = (NovoSolicitationRequest) target;
+        Usuario usuario = manager.find(Usuario.class, request.getIdUser());
+        Restaurante restaurante = manager.find(Restaurante.class, request.getIdRestaurant());
 
-        boolean permitePagamento = usuario.permitePagamento(restaurante, request.getTipoDePagamento(), regraFraudes);
+        boolean permitePagamento = usuario.permitePagamento(restaurante, request.getType(), regraFraudes);
         if(!permitePagamento) {
             errors.reject(null, "A forma, de pagamento entre usuário e restaurante não eh valida    ");
         }

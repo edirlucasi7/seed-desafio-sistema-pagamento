@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -15,8 +17,12 @@ import java.util.Map;
 @RestController
 public class PagamentoOfflineController {
 
+    @PersistenceContext
+    private EntityManager manager;
     @Autowired
     private VerificaMathPagamentosUsuarioRestauranteValidator verificaMathPagamentosUsuarioRestauranteValidator;
+    @Autowired
+    private ExecutationTransactional execute;
 
     @InitBinder("novoPedidoRequest")
     public void init(WebDataBinder binder) {
@@ -24,12 +30,19 @@ public class PagamentoOfflineController {
     }
 
     @PostMapping("/pagamento/offline/{idPedido}")
-    public String processa(@PathVariable Long idPedido, @RequestBody @Valid NovoPedidoRequest request) throws BindException {
+    public String execute(@PathVariable Long idPedido, @RequestBody @Valid NovoSolicitationRequest request) throws BindException {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
             Map<String, Object> pedido = restTemplate.getForObject("http://localhost:8080/api/pedidos/{idPedido}", Map.class, idPedido);
-            System.out.println(pedido);
+            Number value = (Number) pedido.get("valor");
+
+            Transaction transactionSaved = execute.execute(() -> {
+                Transaction transactionalOffline = request.toModel(idPedido, value.doubleValue(), manager);
+                manager.persist(transactionalOffline);
+                return transactionalOffline;
+            });
+            return transactionSaved.getUuid();
         } catch (HttpClientErrorException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 BindException bindException = new BindException("", "");
